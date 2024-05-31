@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  postgres:
+    build:
+      context: ./postgres
+    container_name: ${BASE_CONTAINER_NAME}-docker-db
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - /backups/dc:/backups
+      - /logs/dc:/var/log
+    ports:
+      - "5433:5432"
+    networks:
+      - dc-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PG_ADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PG_ADMIN_PASSWORD}
+      PGADMIN_LISTEN_PORT: ${PG_ADMIN_PORT}
+    depends_on:
+      - postgres
+    networks:
+      - dc-network
+
+  minio:
+    image: minio/minio
+    container_name: ${BASE_CONTAINER_NAME}-minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio_data:/data
+    networks:
+      - dc-network
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        minio server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+
+volumes:
+  db_data:
+  minio_data:
+networks:
+  dc-network:
+    driver: bridge
