@@ -25,6 +25,8 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PG_ADMIN_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PG_ADMIN_PASSWORD}
       PGADMIN_LISTEN_PORT: ${PG_ADMIN_PORT}
+    ports:
+      - "8085:${PG_ADMIN_PORT}"
     depends_on:
       - postgres
     networks:
