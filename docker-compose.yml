@@ -51,9 +51,24 @@ services:
       - "9000:9000"
       - "9001:9001"
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: ${BASE_CONTAINER_NAME}-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - dc-network
+
 volumes:
   db_data:
   minio_data:
+  rabbitmq_data:
 networks:
   dc-network:
     driver: bridge
