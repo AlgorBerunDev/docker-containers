@@ -11,8 +11,8 @@ services:
       POSTGRES_DB: ${DB_NAME}
     volumes:
       - db_data:/var/lib/postgresql/data
-      - /backups/dc:/backups
-      - /logs/dc:/var/log
+      - ./postgres/backups:/backups
+      - ./postgres/logs:/var/log
     ports:
       - "5433:5432"
     networks:
