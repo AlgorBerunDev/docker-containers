@@ -65,10 +65,24 @@ services:
     networks:
       - dc-network
 
+  mongodb:
+    image: mongo:latest
+    container_name: ${BASE_CONTAINER_NAME}-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27018:27017"
+    networks:
+      - dc-network
+
 volumes:
   db_data:
   minio_data:
   rabbitmq_data:
+  mongo_data:
 networks:
   dc-network:
     driver: bridge
